@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="panel profile-hero">
+    <div class="avatar-orb" style="background: {{ user.accent }}"></div>
+    <div>
+      <p class="eyebrow">Creator profile</p>
+      <h2>{{ user.name }}</h2>
+      <p class="meta">@{{ user.handle }}</p>
+      <p class="summary">{{ user.bio }}</p>
+      <div class="profile-metrics">
+        <span>{{ profile_stats.followers }} followers</span>
+        <span>{{ profile_stats.following }} following</span>
+        <span>{{ profile_stats.saved_posts }} saved</span>
+      </div>
+      {% if current_user and current_user.handle != user.handle %}
+        <form method="post" action="{{ url_for('follow_creator', handle=user.handle) }}">
+          <button class="primary-btn profile-follow-btn" type="submit">{{ 'Following' if profile_stats.is_followed else 'Follow creator' }}</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="feed-list">
+    {% for post in posts %}
+      <article class="panel post-card">
+        <div class="post-top">
+          <div>
+            <span class="post-kind">{{ post.kind }}</span>
+            <h3>{{ post.title }}</h3>
+            <p class="meta">{{ post.created_at }}</p>
+          </div>
+          <span class="score-pill">{{ post.trend_score }} pulse</span>
+        </div>
+        <p class="summary">{{ post.summary }}</p>
+        {% if post.prompt_text %}
+          <pre class="prompt-box">{{ post.prompt_text }}</pre>
+        {% endif %}
+        <div class="tag-row">
+          {% for tag in post.tags %}
+            <a href="{{ url_for('home', tag=tag) }}" class="tag-chip">#{{ tag }}</a>
+          {% endfor %}
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+{% endblock %}

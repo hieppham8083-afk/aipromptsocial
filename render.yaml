@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ai-prompt-social
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /var/data/ai_prompt_hub.db
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+    disk:
+      name: ai-prompt-social-data
+      mountPath: /var/data
+      sizeGB: 1

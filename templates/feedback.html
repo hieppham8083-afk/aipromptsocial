@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="feedback-hero">
+    <div class="feed-toolbar">
+      <div>
+        <h1>{{ page_title }}</h1>
+        <p>{{ page_description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="feedback-grid">
+    <article class="panel feedback-panel">
+      <h2>Send Feedback</h2>
+      <p>Tell the owner what feels broken, missing, or worth improving.</p>
+      <form class="feedback-form" method="post" action="{{ url_for('submit_feedback') }}">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          value="{{ current_user.name if current_user else '' }}"
+          required
+        >
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value="{{ current_user.email if current_user and current_user.email else '' }}"
+        >
+        <select name="topic" required>
+          <option value="">Choose a topic</option>
+          <option>Bug report</option>
+          <option>Feature request</option>
+          <option>Design feedback</option>
+          <option>Content issue</option>
+          <option>General feedback</option>
+        </select>
+        <textarea name="message" rows="6" placeholder="What should the owner know?" required></textarea>
+        <button class="primary-btn" type="submit">Send feedback</button>
+      </form>
+    </article>
+
+    <aside class="panel feedback-panel">
+      <h2>What Happens Next</h2>
+      <div class="feedback-checklist">
+        <div>Bug reports should include what you clicked, what you expected, and what actually happened.</div>
+        <div>Feature requests are most useful when they explain the user problem first.</div>
+        <div>Design feedback can mention layout friction, readability, or confusing navigation.</div>
+      </div>
+      {% if recent_feedback %}
+        <div class="feedback-history">
+          <h3>Your recent feedback</h3>
+          {% for item in recent_feedback %}
+            <article class="feedback-history-item">
+              <strong>{{ item.topic }}</strong>
+              <p>{{ item.message }}</p>
+              <small>{{ item.created_at }}</small>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </aside>
+  </section>
+{% endblock %}

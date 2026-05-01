@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if not current_user %}
+    <section class="panel auth-card">
+      <h2>{% if auth_mode == 'login' %}Log in{% elif auth_mode == 'reset' %}Reset password{% else %}Create an account{% endif %}</h2>
+      <p>Post AI ideas, useful prompts, and small workflows in one simple feed.</p>
+      <div class="feed-tabs">
+        <a class="{{ 'active' if auth_mode not in ('login', 'reset') else '' }}" href="{{ url_for('home', auth='signup') }}">Sign up</a>
+        <a class="{{ 'active' if auth_mode == 'login' else '' }}" href="{{ url_for('home', auth='login') }}">Log in</a>
+        <a class="{{ 'active' if auth_mode == 'reset' else '' }}" href="{{ url_for('home', auth='reset') }}">Reset password</a>
+      </div>
+      {% if auth_mode == 'login' %}
+        <form class="auth-form" method="post" action="{{ url_for('login') }}">
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button class="primary-btn" type="submit">Log in</button>
+        </form>
+        <p class="hint">Demo: demo@signalprompt.local / demo1234</p>
+      {% elif auth_mode == 'reset' %}
+        <form class="auth-form" method="post" action="{{ url_for('reset_password') }}">
+          <input type="email" name="email" placeholder="Account email" required>
+          <input type="password" name="password" placeholder="New password" required>
+          <button class="primary-btn" type="submit">Reset password</button>
+        </form>
+        <p class="hint">Local reset only. No email verification is sent.</p>
+      {% else %}
+        <form class="auth-form" method="post" action="{{ url_for('signup') }}">
+          <input type="text" name="name" placeholder="Name" required>
+          <input type="text" name="handle" placeholder="Handle" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button class="primary-btn" type="submit">Create account</button>
+        </form>
+      {% endif %}
+    </section>
+  {% elif active_view != 'saved' %}
+    <section class="panel composer">
+      <form class="composer-form simple-composer" method="post" action="{{ url_for('create_post') }}">
+        <div class="composer-row">
+          <span class="avatar" style="background: {{ current_user.accent }}">{{ current_user.name[:1] }}</span>
+          <textarea name="summary" rows="2" placeholder="Share an AI idea, prompt, or workflow..." required></textarea>
+        </div>
+        <div class="composer-tools">
+          <select name="kind">
+            <option>Idea</option>
+            <option>Prompt</option>
+            <option>Workflow</option>
+          </select>
+          <input type="text" name="tags" placeholder="Tags">
+          <button class="primary-btn" type="submit">Post</button>
+        </div>
+        <input type="hidden" name="title" value="">
+        <input type="hidden" name="prompt_text" value="">
+      </form>
+    </section>
+  {% endif %}
+
+  <section class="feed-toolbar">
+    <div>
+      <h1>{{ page_title }}</h1>
+      <p>{{ page_description }}</p>
+    </div>
+  </section>
+
+  <section
+    class="feed-list"
+    id="feed-list"
+    data-next-offset="{{ posts|length }}"
+    data-page-size="{{ page_size }}"
+    data-view="{{ active_view }}"
+    data-sort="{{ active_sort }}"
+    data-query="{{ search_query }}"
+    data-tag="{{ active_tag }}"
+  >
+    {% for post in posts %}
+      {% include "_post_card.html" %}
+    {% else %}
+      <article class="panel empty-state">
+        <h2>No posts yet</h2>
+        <p>Start with one AI idea or prompt.</p>
+      </article>
+    {% endfor %}
+  </section>
+  {% if active_view in ('global', 'following') %}
+    <div id="feed-loader" class="feed-loader">Loading more posts...</div>
+  {% endif %}
+  <script>
+    (() => {
+      const list = document.getElementById("feed-list");
+      const loader = document.getElementById("feed-loader");
+      if (!list || !loader || !["global", "following"].includes(list.dataset.view)) return;
+      let loading = false;
+      let done = false;
+
+      async function loadMore() {
+        if (loading || done) return;
+        loading = true;
+        loader.classList.add("visible");
+        const params = new URLSearchParams({
+          view: list.dataset.view,
+          sort: list.dataset.sort || "latest",
+          q: list.dataset.query || "",
+          tag: list.dataset.tag || "",
+          offset: list.dataset.nextOffset || "0",
+          limit: list.dataset.pageSize || "8",
+        });
+        try {
+          const response = await fetch(`/api/posts?${params.toString()}`);
+          const data = await response.json();
+          if (data.html) {
+            list.insertAdjacentHTML("beforeend", data.html);
+            list.dataset.nextOffset = String(data.next_offset);
+          }
+          done = !data.has_more;
+          loader.textContent = done ? "You are caught up." : "Loading more posts...";
+        } catch (_error) {
+          loader.textContent = "Could not load more posts.";
+          done = true;
+        } finally {
+          loading = false;
+          if (!done) loader.classList.remove("visible");
+        }
+      }
+
+      function nearBottom() {
+        return window.innerHeight + window.scrollY > document.body.offsetHeight - 700;
+      }
+
+      async function fillViewportIfNeeded() {
+        let safety = 0;
+        while (!done && safety < 6 && nearBottom()) {
+          await loadMore();
+          safety += 1;
+        }
+      }
+
+      window.addEventListener("scroll", () => {
+        if (nearBottom()) {
+          loadMore();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (nearBottom()) {
+          fillViewportIfNeeded();
+        }
+      });
+
+      fillViewportIfNeeded();
+    })();
+  </script>
+{% endblock %}
