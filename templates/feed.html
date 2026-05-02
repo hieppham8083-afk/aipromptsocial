@@ -1,37 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
   {% if not current_user %}
-    <section class="panel auth-card">
-      <h2>{% if auth_mode == 'login' %}Log in{% elif auth_mode == 'reset' %}Reset password{% else %}Create an account{% endif %}</h2>
-      <p>Post AI ideas, useful prompts, and small workflows in one simple feed.</p>
-      <div class="feed-tabs">
-        <a class="{{ 'active' if auth_mode not in ('login', 'reset') else '' }}" href="{{ url_for('home', auth='signup') }}">Sign up</a>
-        <a class="{{ 'active' if auth_mode == 'login' else '' }}" href="{{ url_for('home', auth='login') }}">Log in</a>
-        <a class="{{ 'active' if auth_mode == 'reset' else '' }}" href="{{ url_for('home', auth='reset') }}">Reset password</a>
+    <section class="landing-hero">
+      <div class="panel landing-copy">
+        <span class="eyebrow">AI prompt discovery for builders</span>
+        <h1>Share useful AI prompts and workflows.</h1>
+        <p>A simple feed for AI ideas, prompt examples, workflows, news, and experiments worth saving.</p>
+        <div class="landing-points">
+          <div class="landing-point">
+            <strong>Discover</strong>
+            <span>Find prompts, workflows, and AI ideas from the community.</span>
+          </div>
+          <div class="landing-point">
+            <strong>Save</strong>
+            <span>Keep the best posts and creators in one place.</span>
+          </div>
+        </div>
       </div>
-      {% if auth_mode == 'login' %}
-        <form class="auth-form" method="post" action="{{ url_for('login') }}">
-          <input type="email" name="email" placeholder="Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button class="primary-btn" type="submit">Log in</button>
-        </form>
-        <p class="hint">Demo: demo@signalprompt.local / demo1234</p>
-      {% elif auth_mode == 'reset' %}
-        <form class="auth-form" method="post" action="{{ url_for('reset_password') }}">
-          <input type="email" name="email" placeholder="Account email" required>
-          <input type="password" name="password" placeholder="New password" required>
-          <button class="primary-btn" type="submit">Reset password</button>
-        </form>
-        <p class="hint">Local reset only. No email verification is sent.</p>
-      {% else %}
-        <form class="auth-form" method="post" action="{{ url_for('signup') }}">
-          <input type="text" name="name" placeholder="Name" required>
-          <input type="text" name="handle" placeholder="Handle" required>
-          <input type="email" name="email" placeholder="Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button class="primary-btn" type="submit">Create account</button>
-        </form>
-      {% endif %}
+      <section class="panel auth-card">
+        <h2>{% if auth_mode == 'login' %}Log in{% elif auth_mode == 'reset' %}Reset password{% else %}Create an account{% endif %}</h2>
+        <p>Post AI ideas, useful prompts, and small workflows in one simple feed.</p>
+        <div class="feed-tabs">
+          <a class="{{ 'active' if auth_mode not in ('login', 'reset') else '' }}" href="{{ url_for('home', auth='signup') }}">Sign up</a>
+          <a class="{{ 'active' if auth_mode == 'login' else '' }}" href="{{ url_for('home', auth='login') }}">Log in</a>
+          <a class="{{ 'active' if auth_mode == 'reset' else '' }}" href="{{ url_for('home', auth='reset') }}">Reset password</a>
+        </div>
+        {% if auth_mode == 'login' %}
+          <form class="auth-form" method="post" action="{{ url_for('login') }}">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="primary-btn" type="submit">Log in</button>
+          </form>
+          <p class="hint">Demo: demo@signalprompt.local / demo1234</p>
+        {% elif auth_mode == 'reset' %}
+          <form class="auth-form" method="post" action="{{ url_for('reset_password') }}">
+            <input type="email" name="email" placeholder="Account email" required>
+            <input type="password" name="password" placeholder="New password" required>
+            <button class="primary-btn" type="submit">Reset password</button>
+          </form>
+          <p class="hint">Local reset only. No email verification is sent.</p>
+        {% else %}
+          <form class="auth-form" method="post" action="{{ url_for('signup') }}">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="handle" placeholder="Handle" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="primary-btn" type="submit">Create account</button>
+          </form>
+        {% endif %}
+      </section>
     </section>
   {% elif active_view != 'saved' %}
     <section class="panel composer">
