@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body data-active-view="{{ active_view or '' }}" data-active-section="{{ active_section or '' }}">
-    <header class="topbar">
+    <header class="topbar {{ 'is-signed-in' if current_user else 'is-guest' }}">
       <div class="top-left">
         <div class="brand-stack">
           <a class="brand" href="{{ url_for('home') }}">
