@@ -354,13 +354,25 @@ select {
 @media (max-width: 1180px) {
   .topbar {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     justify-items: stretch;
+    gap: 6px;
+    padding: 8px 12px;
   }
 
+  .topbar.is-guest .top-left,
+  .topbar.is-signed-in .top-left,
   .top-left,
   .top-center,
-  .top-actions {
+  .top-actions,
+  .header-nav-row {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .top-left {
     justify-content: center;
+    flex-wrap: nowrap;
   }
 
   .top-center,
@@ -368,16 +380,37 @@ select {
     transform: none;
   }
 
-  .top-left {
-    flex-wrap: wrap;
+  .top-center {
+    justify-self: center;
+    max-width: 760px;
   }
 
   .top-actions {
     justify-content: center;
+    align-self: auto;
   }
 
+  .header-nav-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+
+  .header-nav-row .view-nav,
+  .header-nav-row .header-tabs {
+    grid-column: auto;
+    justify-self: auto;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .header-tabs,
+  .view-nav,
   .guest-actions {
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .login-strip {
@@ -792,12 +825,13 @@ textarea {
   }
 
   .top-actions {
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .guest-actions {
     width: 100%;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .guest-actions .primary-btn,
@@ -821,7 +855,6 @@ textarea {
   }
 
   .login-strip,
-  .top-actions,
   .feed-toolbar,
   .comment-form {
     flex-direction: column;
@@ -834,5 +867,45 @@ textarea {
 
   .brand {
     white-space: normal;
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    padding: 7px 10px;
+  }
+
+  .brand {
+    font-size: 16px;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .searchbar input {
+    padding: 6px 12px;
+  }
+
+  .header-nav-row {
+    gap: 5px 8px;
+  }
+
+  .header-tabs a,
+  .view-nav a {
+    font-size: 14px;
+    padding: 3px 7px;
+  }
+
+  .account-stack {
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .guest-actions .primary-btn,
+  .guest-actions .ghost-btn {
+    width: auto;
   }
 }
