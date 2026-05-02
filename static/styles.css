@@ -24,10 +24,10 @@ a { color: inherit; text-decoration: none; }
   top: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 640px) minmax(0, 1fr);
   gap: 12px 18px;
-  align-items: center;
-  padding: 6px 18px;
+  align-items: start;
+  padding: 8px 18px 10px;
   background: var(--panel);
   border-bottom: 1px solid var(--line);
 }
@@ -54,6 +54,7 @@ a { color: inherit; text-decoration: none; }
 .top-actions {
   justify-content: flex-end;
   gap: 8px;
+  align-self: start;
 }
 
 .account-stack {
@@ -64,12 +65,14 @@ a { color: inherit; text-decoration: none; }
 
 .top-left {
   gap: 10px;
-  align-items: flex-start;
+  align-items: center;
+  min-width: 0;
 }
 
 .brand-stack {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .top-center {
@@ -77,6 +80,7 @@ a { color: inherit; text-decoration: none; }
   justify-items: center;
   gap: 6px;
   min-width: 0;
+  width: 100%;
 }
 
 .brand {
@@ -155,18 +159,20 @@ select {
 }
 
 .searchbar input {
-  width: min(460px, 40vw);
+  width: min(620px, 100%);
   padding: 8px 14px;
 }
 
 .login-strip {
   display: flex;
   gap: 8px;
-  width: 100%;
+  width: auto;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .login-strip input {
-  width: 125px;
+  width: 160px;
   padding: 9px 12px;
 }
 
@@ -213,6 +219,12 @@ select {
   flex-wrap: wrap;
 }
 
+.searchbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .content,
 .feed-list {
   display: grid;
@@ -223,6 +235,7 @@ select {
   justify-content: flex-start;
   gap: 8px;
   margin-bottom: 0;
+  flex-wrap: wrap;
 }
 
 .header-tabs a,
@@ -239,6 +252,33 @@ select {
 .feed-tabs a.active {
   color: var(--blue);
   background: #e7f0ff;
+}
+
+@media (max-width: 1180px) {
+  .topbar {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
+  .top-left,
+  .top-center,
+  .top-actions {
+    justify-content: center;
+  }
+
+  .top-left {
+    flex-wrap: wrap;
+  }
+
+  .top-actions {
+    justify-content: center;
+  }
+
+  .login-strip {
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
 }
 
 .panel {

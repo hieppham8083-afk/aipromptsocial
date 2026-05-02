@@ -44,13 +44,6 @@
             {% endif %}
           </nav>
         </div>
-        {% if not current_user %}
-          <form class="login-strip" method="post" action="{{ url_for('login') }}">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Log in</button>
-          </form>
-        {% endif %}
       </div>
 
       <div class="top-center">
