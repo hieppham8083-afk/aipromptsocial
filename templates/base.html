@@ -32,18 +32,20 @@
       <div class="top-left">
         <div class="brand-stack">
           <a class="brand" href="{{ url_for('home') }}">
-            <span class="brand-mark">S</span>
-            <strong>Signal & Prompt</strong>
+            <span class="brand-mark">HP</span>
+            <span>
+              <strong>{{ site_name }}</strong>
+              <small>Discover prompts, workflows, news, and games</small>
+            </span>
           </a>
-
+        </div>
+        {% if current_user %}
           <nav class="view-nav">
             <a class="{{ 'active' if active_view == 'global' else '' }}" href="{{ url_for('home') }}">Home</a>
-            {% if current_user %}
-              <a class="{{ 'active' if active_view == 'following' else '' }}" href="{{ url_for('following_feed') }}">Following</a>
-              <a class="{{ 'active' if active_view == 'saved' else '' }}" href="{{ url_for('saved_feed') }}">Saved</a>
-            {% endif %}
+            <a class="{{ 'active' if active_view == 'following' else '' }}" href="{{ url_for('following_feed') }}">Following</a>
+            <a class="{{ 'active' if active_view == 'saved' else '' }}" href="{{ url_for('saved_feed') }}">Saved</a>
           </nav>
-        </div>
+        {% endif %}
       </div>
 
       <div class="top-center">
@@ -79,7 +81,10 @@
             </form>
           </div>
         {% else %}
-          <a class="icon-btn" href="{{ url_for('home', auth='signup') }}">Sign up</a>
+          <div class="guest-actions">
+            <a class="ghost-btn" href="{{ url_for('home', auth='login') }}">Log in</a>
+            <a class="primary-btn" href="{{ url_for('home', auth='signup') }}">Create account</a>
+          </div>
         {% endif %}
       </div>
     </header>
