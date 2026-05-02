@@ -11,7 +11,21 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = Path(os.environ.get("DATABASE_PATH", str(BASE_DIR / "ai_prompt_hub.db")))
+
+
+def resolve_database_path() -> Path:
+    configured_path = os.environ.get("DATABASE_PATH")
+    if configured_path:
+        return Path(configured_path)
+
+    persistent_dir = Path("/var/data")
+    if persistent_dir.exists() and os.access(persistent_dir, os.W_OK):
+        return persistent_dir / "ai_prompt_hub.db"
+
+    return BASE_DIR / "ai_prompt_hub.db"
+
+
+DATABASE_PATH = resolve_database_path()
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
@@ -28,6 +42,7 @@ def make_password_hash(password: str) -> str:
 
 def get_db() -> sqlite3.Connection:
     if "db" not in g:
+        DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
         g.db = sqlite3.connect(DATABASE_PATH)
         g.db.row_factory = sqlite3.Row
     return g.db
