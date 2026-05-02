@@ -3,7 +3,28 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Signal & Prompt</title>
+    {% set resolved_title = page_title or site_name %}
+    {% set full_title = resolved_title ~ ' | ' ~ site_name if resolved_title != site_name else site_name %}
+    {% set resolved_description = page_description or 'AI social platform for sharing prompts, workflows, ideas, news, and games discovery.' %}
+    {% set canonical_url = request.base_url %}
+    {% if request.query_string and (search_query or '') %}
+      {% set canonical_url = request.url %}
+    {% endif %}
+    {% set absolute_favicon = site_url ~ url_for('static', filename='favicon.svg') if site_url else url_for('static', filename='favicon.svg') %}
+    <title>{{ full_title }}</title>
+    <meta name="description" content="{{ resolved_description }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:title" content="{{ full_title }}">
+    <meta property="og:description" content="{{ resolved_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ absolute_favicon }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ full_title }}">
+    <meta name="twitter:description" content="{{ resolved_description }}">
+    <meta name="twitter:image" content="{{ absolute_favicon }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body data-active-view="{{ active_view or '' }}" data-active-section="{{ active_section or '' }}">

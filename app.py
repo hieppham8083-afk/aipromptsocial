@@ -472,7 +472,14 @@ def load_current_user() -> None:
 
 @app.context_processor
 def inject_globals() -> dict:
-    return {"current_user": current_user()}
+    base_site_url = os.environ.get("SITE_URL", "").rstrip("/")
+    if not base_site_url and request:
+        base_site_url = request.url_root.rstrip("/")
+    return {
+        "current_user": current_user(),
+        "site_name": "AI Prompt Social",
+        "site_url": base_site_url,
+    }
 
 
 def require_login():
