@@ -39,13 +39,6 @@
             </span>
           </a>
         </div>
-        {% if current_user %}
-          <nav class="view-nav">
-            <a class="{{ 'active' if active_view == 'global' else '' }}" href="{{ url_for('home') }}">Home</a>
-            <a class="{{ 'active' if active_view == 'following' else '' }}" href="{{ url_for('following_feed') }}">Following</a>
-            <a class="{{ 'active' if active_view == 'saved' else '' }}" href="{{ url_for('saved_feed') }}">Saved</a>
-          </nav>
-        {% endif %}
       </div>
 
       <div class="top-center">
@@ -64,6 +57,14 @@
           <a class="{{ 'active' if active_section == 'games' else '' }}" href="{{ url_for('games_feed') }}">Games</a>
           <a class="{{ 'active' if active_section == 'feedback' else '' }}" href="{{ url_for('feedback_feed') }}">Feedback</a>
         </nav>
+
+        {% if current_user %}
+          <nav class="view-nav" aria-label="Feed view">
+            <a class="{{ 'active' if active_view == 'global' else '' }}" href="{{ url_for('home') }}">Home</a>
+            <a class="{{ 'active' if active_view == 'following' else '' }}" href="{{ url_for('following_feed') }}">Following</a>
+            <a class="{{ 'active' if active_view == 'saved' else '' }}" href="{{ url_for('saved_feed') }}">Saved</a>
+          </nav>
+        {% endif %}
       </div>
 
       <div class="top-actions">
